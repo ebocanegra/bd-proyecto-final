@@ -61,7 +61,7 @@ class ActividadesController extends Controller
      */
     public function show($codigo)
     {
-	/*	// return "Se muestra   Actividades con codigo: $codigo";
+
 		// Buscamos una actividad por el codigo.
 		$actividad=actividades::find($codigo);
 
@@ -70,10 +70,10 @@ class ActividadesController extends Controller
 		{
 			// Se devuelve un array errors con los errores encontrados y cabecera HTTP 404.
 			// En code podríamos indicar un código de error personalizado de nuestra aplicación si lo deseamos.
-			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra la actividad con ese código.'])],404);
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra ninguna actividad con ese código.'])],404);
 		}
 
-		return response()->json(['status'=>'ok','data'=>$actividad],200);*/
+		return response()->json(['status'=>'ok','data'=>$actividad],200);
     }
 
     /**
@@ -94,9 +94,84 @@ class ActividadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $codigo)
     {
-        //
+        
+        // Vamos a actualizar una actividad.
+		// Comprobamos si la actividad existe. En otro caso devolvemos error.
+		$actividad=actividades::find($codigo);
+
+		// Si no existe mostramos error.
+		if (! $actividad)
+		{
+			// Devolvemos error 404.
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra ninguna actividad con ese código.'])],404);
+		}
+
+		// Almacenamos en variables para facilitar el uso, los campos recibidos.
+		$nombre=$request->input('nombre');
+		$codigo_monitor=$request->input('codigo_monitor');
+		$informacion=$request->input('informacion');
+
+		// Comprobamos si recibimos petición PATCH(parcial) o PUT (Total)
+		if ($request->method()=='PATCH')
+		{
+			$bandera=false;
+
+			// Actualización parcial de datos.
+			if ($nombre !=null && $nombre!='')
+			{
+				$actividad->nombre=$nombre;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($codigo_monitor !=null && $codigo_monitor!='')
+			{
+				$actividad->codigo_monitor=$codigo_monitor;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($informacion !=null && $informacion!='')
+			{
+				$actividad->informacion=$informacion;
+				$bandera=true;
+			}
+
+			if ($bandera)
+			{
+				// Grabamos el fabricante.
+				$actividad->save();
+
+				// Devolvemos un código 200.
+				return response()->json(['status'=>'ok','data'=>$actividad],200);
+			}
+			else
+			{
+				// Devolvemos un código 304 Not Modified.
+				return response()->json(['errors'=>array(['code'=>304,'message'=>'No se ha modificado ningún dato de la actividad.'])],304);
+			}
+		}
+
+
+		// Método PUT actualizamos todos los campos.
+		// Comprobamos que recibimos todos.
+		if (!$nombre || !$codigo_monitor || !$informacion)
+		{
+			// Se devuelve código 422 Unprocessable Entity.
+			return response()->json(['errors'=>array(['code'=>422,'message'=>'Faltan valores para completar el procesamiento.'])],422);
+		}
+
+		// Actualizamos los 3 campos:
+		$actividad->nombre=$nombre;
+		$actividad->codigo_monitor=$codigo_monitor;
+		$actividad->informacion=$informacion;
+
+		// Grabamos el fabricante
+		$actividad->save();
+		return response()->json(['status'=>'ok','data'=>$actividad],200);
+
     }
 
     /**

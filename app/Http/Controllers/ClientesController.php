@@ -58,9 +58,20 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($codigo)
     {
-        //
+        // Buscamos un cliente por el codigo.
+		$cliente=clientes::find($codigo);
+
+		// Si no existe ese monitor devolvemos un error.
+		if (!$cliente)
+		{
+			// Se devuelve un array errors con los errores encontrados y cabecera HTTP 404.
+			// En code podríamos indicar un código de error personalizado de nuestra aplicación si lo deseamos.
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra el cliente con ese código.'])],404);
+		}
+
+		return response()->json(['status'=>'ok','data'=>$cliente],200);
     }
 
     /**
@@ -81,9 +92,116 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $codigo)
     {
-        //
+        
+         // Vamos a actualizar un cliente.
+		// Comprobamos si la clientes existe. En otro caso devolvemos error.
+		$clientes=clientes::find($codigo);
+
+		// Si no existe mostramos error.
+		if (! $clientes)
+		{
+			// Devolvemos error 404.
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra ningun cliente con ese código.'])],404);
+		}
+
+		// Almacenamos en variables para facilitar el uso, los campos recibidos.
+		$nombre=$request->input('nombre');
+		$nif=$request->input('nif');
+        $direccion=$request->input('direccion');
+        $correo=$request->input('correo');
+        $fechaInscripcion=$request->input('fechaInscripcion');
+        $tarifa=$request->input('tarifa');
+        $contrasena=$request->input('contrasena');
+
+		// Comprobamos si recibimos petición PATCH(parcial) o PUT (Total)
+		if ($request->method()=='PATCH')
+		{
+			$bandera=false;
+
+			// Actualización parcial de datos.
+			if ($nombre !=null && $nombre!='')
+			{
+				$clientes->nombre=$nombre;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($nif !=null && $nif!='')
+			{
+				$clientes->nif=$nif;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($direccion !=null && $direccion!='')
+			{
+				$clientes->direccion=$direccion;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($correo !=null && $correo!='')
+			{
+				$clientes->direccion=$correo;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($fechaInscripcion !=null && $fechaInscripcion!='')
+			{
+				$clientes->fechaInscripcion=$fechaInscripcion;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($tarifa !=null && $tarifa!='')
+			{
+				$clientes->tarifa=$tarifa;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($contrasena !=null && $contrasena!='')
+			{
+				$clientes->contrasena=$contrasena;
+				$bandera=true;
+			}
+
+			if ($bandera)
+			{
+				// Grabamos el fabricante.
+				$clientes->save();
+
+				// Devolvemos un código 200.
+				return response()->json(['status'=>'ok','data'=>$clientes],200);
+			}
+			else
+			{
+				// Devolvemos un código 304 Not Modified.
+				return response()->json(['errors'=>array(['code'=>304,'message'=>'No se ha modificado ningún dato de la actividad.'])],304);
+			}
+		}
+
+
+		// Método PUT actualizamos todos los campos.
+		// Comprobamos que recibimos todos.
+		if (!$nombre || !$nif || !$direccion || !$correo || !$fechaInscripcion || !$tarifa || !$contrasena)
+		{
+			// Se devuelve código 422 Unprocessable Entity.
+			return response()->json(['errors'=>array(['code'=>422,'message'=>'Faltan valores para completar el procesamiento.'])],422);
+		}
+
+		// Actualizamos los 3 campos:
+		$clientes->nombre=$nombre;
+		$clientes->nif=$nif;
+        $clientes->direccion=$direccion;
+        $clientes->correo=$correo;
+        $clientes->fechaInscripcion=$fechaInscripcion;
+        $clientes->tarifa=$tarifa;
+        $clientes->contrasena=$contrasena;
+
+		// Grabamos el fabricante
+		$clientes->save();
+		return response()->json(['status'=>'ok','data'=>$clientes],200);
+
     }
 
     /**

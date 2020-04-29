@@ -57,9 +57,21 @@ class MonitoresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($codigo)
     {
-        //
+
+		// Buscamos un monitor por el codigo.
+		$monitor=monitores::find($codigo);
+
+		// Si no existe ese monitor devolvemos un error.
+		if (!$monitor)
+		{
+			// Se devuelve un array errors con los errores encontrados y cabecera HTTP 404.
+			// En code podríamos indicar un código de error personalizado de nuestra aplicación si lo deseamos.
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra el monitor con ese código.'])],404);
+		}
+
+		return response()->json(['status'=>'ok','data'=>$monitor],200);
     }
 
     /**
@@ -80,9 +92,106 @@ class MonitoresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $codigo)
     {
-        //
+         // Vamos a actualizar un monitor.
+		// Comprobamos si el monitor existe. En otro caso devolvemos error.
+		$monitores=monitores::find($codigo);
+
+		// Si no existe mostramos error.
+		if (! $monitores)
+		{
+			// Devolvemos error 404.
+			return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra ningun monitor con ese código.'])],404);
+		}
+
+		// Almacenamos en variables para facilitar el uso, los campos recibidos.
+		$nombre=$request->input('nombre');
+		$nif=$request->input('nif');
+        $direccion=$request->input('direccion');
+        $correo=$request->input('correo');
+        $telefono=$request->input('telefono');
+        $contrasena=$request->input('contrasena');
+
+		// Comprobamos si recibimos petición PATCH(parcial) o PUT (Total)
+		if ($request->method()=='PATCH')
+		{
+			$bandera=false;
+
+			// Actualización parcial de datos.
+			if ($nombre !=null && $nombre!='')
+			{
+				$monitores->nombre=$nombre;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($nif !=null && $nif!='')
+			{
+				$monitores->nif=$nif;
+				$bandera=true;
+			}
+
+			// Actualización parcial de datos.
+			if ($direccion !=null && $direccion!='')
+			{
+				$monitores->direccion=$direccion;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($correo !=null && $correo!='')
+			{
+				$monitores->direccion=$correo;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($telefono !=null && $telefono!='')
+			{
+				$monitores->telefono=$telefono;
+				$bandera=true;
+            }
+            // Actualización parcial de datos.
+            if ($contrasena !=null && $contrasena!='')
+			{
+				$monitores->contrasena=$contrasena;
+				$bandera=true;
+			}
+
+			if ($bandera)
+			{
+				// Grabamos el fabricante.
+				$monitores->save();
+
+				// Devolvemos un código 200.
+				return response()->json(['status'=>'ok','data'=>$monitores],200);
+			}
+			else
+			{
+				// Devolvemos un código 304 Not Modified.
+				return response()->json(['errors'=>array(['code'=>304,'message'=>'No se ha modificado ningún dato de la actividad.'])],304);
+			}
+		}
+
+
+		// Método PUT actualizamos todos los campos.
+		// Comprobamos que recibimos todos.
+		if (!$nombre || !$nif || !$direccion || !$correo || !$telefono || !$contrasena)
+		{
+			// Se devuelve código 422 Unprocessable Entity.
+			return response()->json(['errors'=>array(['code'=>422,'message'=>'Faltan valores para completar el procesamiento.'])],422);
+		}
+
+		// Actualizamos los 3 campos:
+		$monitores->nombre=$nombre;
+		$monitores->nif=$nif;
+        $monitores->direccion=$direccion;
+        $monitores->correo=$correo;
+        $monitores->telefono=$telefono;
+        $monitores->contrasena=$contrasena;
+
+		// Grabamos el fabricante
+		$monitores->save();
+		return response()->json(['status'=>'ok','data'=>$monitores],200);
     }
 
     /**
