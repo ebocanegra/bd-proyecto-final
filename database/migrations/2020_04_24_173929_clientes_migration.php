@@ -19,7 +19,7 @@ class ClientesMigration extends Migration
             $table->string('nif');
             $table->string('direccion');
             $table->string('correo');
-            $table->date('fechaInscripcion');
+            $table->string('fechaInscripcion');
             $table->enum('tarifa',['medio_mes', 'mes', 'trimestre', 'semestre']);
             $table->string('contrasena');
 

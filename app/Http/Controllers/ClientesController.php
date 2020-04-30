@@ -38,7 +38,7 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$request->input('nombre') || !$request->input('nif') || !$request->input('direccion') || !$request->input('correo') ||!$request->input('fechaInscripcion') || !$request->input('tarifa') || !$request->input('contrasena'))
+        if (!$request->input('nombre') || !$request->input('nif') || !$request->input('direccion') || !$request->input('correo') ||!$request->input('fechaInscripcion') || !$request->input('contrasena'))
 		{
 			// No estamos recibiendo los campos necesarios. Devolvemos error.
 			return response()->json(['errors'=>array(['code'=>422,'message'=>'Faltan datos necesarios para procesar el alta.'])],422);
@@ -112,7 +112,6 @@ class ClientesController extends Controller
         $direccion=$request->input('direccion');
         $correo=$request->input('correo');
         $fechaInscripcion=$request->input('fechaInscripcion');
-        $tarifa=$request->input('tarifa');
         $contrasena=$request->input('contrasena');
 
 		// Comprobamos si recibimos petición PATCH(parcial) o PUT (Total)
@@ -153,12 +152,6 @@ class ClientesController extends Controller
 				$bandera=true;
             }
             // Actualización parcial de datos.
-            if ($tarifa !=null && $tarifa!='')
-			{
-				$clientes->tarifa=$tarifa;
-				$bandera=true;
-            }
-            // Actualización parcial de datos.
             if ($contrasena !=null && $contrasena!='')
 			{
 				$clientes->contrasena=$contrasena;
@@ -183,7 +176,7 @@ class ClientesController extends Controller
 
 		// Método PUT actualizamos todos los campos.
 		// Comprobamos que recibimos todos.
-		if (!$nombre || !$nif || !$direccion || !$correo || !$fechaInscripcion || !$tarifa || !$contrasena)
+		if (!$nombre || !$nif || !$direccion || !$correo || !$fechaInscripcion || !$contrasena)
 		{
 			// Se devuelve código 422 Unprocessable Entity.
 			return response()->json(['errors'=>array(['code'=>422,'message'=>'Faltan valores para completar el procesamiento.'])],422);
@@ -195,7 +188,6 @@ class ClientesController extends Controller
         $clientes->direccion=$direccion;
         $clientes->correo=$correo;
         $clientes->fechaInscripcion=$fechaInscripcion;
-        $clientes->tarifa=$tarifa;
         $clientes->contrasena=$contrasena;
 
 		// Grabamos el fabricante
