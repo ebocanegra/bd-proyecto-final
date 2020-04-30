@@ -17,7 +17,7 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        return response()->json(['status'=>'ok','data'=>Actividades::all()], 200);
+        return response()->json(['status'=>'ok','filasTotales'=>Actividades::get()->count(), 'data'=>Actividades::all()], 200);
     }
 
     /**

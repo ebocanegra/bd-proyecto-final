@@ -15,7 +15,7 @@ class MonitoresController extends Controller
      */
     public function index()
     {
-        return response()->json(['status'=>'ok','data'=>Monitores::all()], 200);
+        return response()->json(['status'=>'ok','filasTotales'=>Monitores::get()->count(), 'data'=>Monitores::all()], 200);
     }
 
     /**

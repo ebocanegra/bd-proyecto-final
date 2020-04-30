@@ -16,7 +16,7 @@ class ClientesController extends Controller
      */
     public function index()
     {
-        return response()->json(['status'=>'ok','data'=>Clientes::all()], 200);
+        return response()->json(['status'=>'ok','filasTotales'=>Clientes::get()->count(), 'data'=>Clientes::all()], 200);
 
     }
 
