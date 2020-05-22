@@ -9,7 +9,8 @@ class actividades extends Model
      // Nombre de la tabla en MySQL.
 	protected $table="actividades";
 
-    protected $primaryKey = 'codigo';
+	protected $primaryKey = 'codigo';
+	
 
 	// Atributos que se pueden asignar de manera masiva.
 	protected $fillable = array('nombre', 'codigo_monitor', 'informacion');

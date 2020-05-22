@@ -9,8 +9,8 @@ class monitores extends Model
     // Nombre de la tabla en MySQL.
 	protected $table="monitores";
 
-    protected $primaryKey = 'codigo';
-
+	protected $primaryKey = 'codigo';
+	
 	// Atributos que se pueden asignar de manera masiva.
 	protected $fillable = array('nombre', 'nif', 'direccion', 'correo', 'telefono', 'contrasena' );
 	

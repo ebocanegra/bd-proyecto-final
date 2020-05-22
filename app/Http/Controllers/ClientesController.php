@@ -18,7 +18,41 @@ class ClientesController extends Controller
     {
         return response()->json(['status'=>'ok','filasTotales'=>Clientes::get()->count(), 'data'=>Clientes::all()], 200);
 
+	}
+	
+	
+	/*public function login(Request $request)
+    {
+        $request->validate([
+            'correo'       => 'required|string|email',
+            'contrasena'    => 'required|string',
+        ]);
+        $credentials = request(['correo', 'contrasena']);
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'message' => 'Unauthorized'], 401);
+        }
+        $user = $request->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->token;
+        
+        $token->save();
+        return response()->json([
+            'access_token' => $tokenResult->accessToken,
+            'token_type'   => 'Bearer',
+            'expires_at'   => Carbon::parse(
+                $tokenResult->token->expires_at)
+                    ->toDateTimeString(),
+        ]);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response()->json(['message' => 
+            'Successfully logged out']);
+    }*/
+
 
     /**
      * Show the form for creating a new resource.

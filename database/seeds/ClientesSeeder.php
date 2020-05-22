@@ -17,7 +17,7 @@ class ClientesSeeder extends Seeder
         $faker = Faker::create();
 
         // Creamos un bucle para cubrir 5 clientes:
-        for ($i=1; $i<=5; $i++)
+        for ($i=1; $i<=50; $i++)
         {
             // Cuando llamamos al método create del Modelo Cliente
             // se está creando una nueva fila en la tabla.

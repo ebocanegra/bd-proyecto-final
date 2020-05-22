@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Response;
 use App\monitores;
+use App\actividades;
 
 class MonitoresController extends Controller
 {
@@ -204,6 +205,8 @@ class MonitoresController extends Controller
     {
         // Comprobamos si el monitor existe o no.
 		$monitor=monitores::find($codigo);
+	
+
 
 		if (! $monitor)
 		{
@@ -217,10 +220,20 @@ class MonitoresController extends Controller
 		// Si quisiéramos ver el mensaje devolveríamos
 		// un código 200.
 
-		// Eliminamos la actividad.
+
+		
+
+		//Eliminar todas las actividades de un monitor
+		$actividades = actividades::where('codigo_monitor', $codigo)->delete();
+
+		//Eliminamos el monitor.
 		$monitor->delete();
+		
 
 		// Se devuelve código 204 No Content.
 		return response()->json(['code'=>204,'message'=>'Se ha eliminado correctamente el monitor.'],204);
+
+		
+
     }
 }
