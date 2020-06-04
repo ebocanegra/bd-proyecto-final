@@ -23,3 +23,4 @@ Route::resource('actividades', 'ActividadesController');
 Route::resource('administrador', 'AdministradorController');
 Route::resource('clientes', 'ClientesController');
 Route::resource('monitores', 'MonitoresController');
+Route::resource('novedades', 'NovedadesController');
